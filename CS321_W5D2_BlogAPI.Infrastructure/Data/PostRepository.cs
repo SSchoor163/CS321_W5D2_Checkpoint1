@@ -9,45 +9,57 @@ namespace CS321_W5D2_BlogAPI.Infrastructure.Data
 {
     public class PostRepository : IPostRepository
     {
+        private readonly AppDbContext _dbContext;
         public PostRepository(AppDbContext dbContext) 
-        {  
+        {
+            _dbContext = dbContext;
         }
 
         public Post Get(int id)
         {
-            // TODO: Implement Get(id). Include related Blog and Blog.User
-            throw new NotImplementedException();
+            var post = _dbContext.Posts.Include(b => b.Blog).ThenInclude(b => b.User)
+                .FirstOrDefault(p => p.Id == id);
+            if (post == null) return null;
+            return post;
         }
 
         public IEnumerable<Post> GetBlogPosts(int blogId)
         {
-            // TODO: Implement GetBlogPosts, return all posts for given blog id
-            // TODO: Include related Blog and AppUser
-            throw new NotImplementedException();
+            var posts = _dbContext.Posts.Include(b => b.Blog).ThenInclude(b => b.User)
+                .Where(p => p.BlogId == blogId).ToList();
+            if (posts == null) return null;
+            return posts;
         }
 
         public Post Add(Post Post)
         {
-            // TODO: add Post
-            throw new NotImplementedException();
+            _dbContext.Add(Post);
+            _dbContext.SaveChanges();
+            return Post;
         }
 
         public Post Update(Post Post)
         {
-            // TODO: update Post
-            throw new NotImplementedException();
+            var post = _dbContext.Posts.FirstOrDefault(p => p.Id == Post.Id);
+            if (post == null) return null;
+            _dbContext.Entry(post).CurrentValues.SetValues(Post);
+            _dbContext.Update(Post);
+            _dbContext.SaveChanges();
+            return Post;
         }
 
         public IEnumerable<Post> GetAll()
         {
-            // TODO: get all posts
-            throw new NotImplementedException();
+            var posts = _dbContext.Posts;
+            return posts;
         }
 
         public void Remove(int id)
         {
-            // TODO: remove Post
-            throw new NotImplementedException();
+            var post = _dbContext.Posts.FirstOrDefault(p => p.Id == id);
+            if (post == null) throw new SystemException("Can not find Post to delete");
+            _dbContext.Posts.Remove(post);
+            _dbContext.SaveChanges();
         }
 
     }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CS321_W5D2_BlogAPI.Infrastructure.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -200,7 +200,7 @@ namespace CS321_W5D2_BlogAPI.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comments",
+                name: "Comment",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -208,17 +208,25 @@ namespace CS321_W5D2_BlogAPI.Infrastructure.Migrations
                     Title = table.Column<string>(nullable: true),
                     Content = table.Column<string>(nullable: true),
                     DatePublished = table.Column<DateTime>(nullable: false),
-                    PostId = table.Column<int>(nullable: false)
+                    PostId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: false),
+                    UserId1 = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.PrimaryKey("PK_Comment", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comments_Posts_PostId",
+                        name: "FK_Comment_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Comment_AspNetUsers_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -264,9 +272,14 @@ namespace CS321_W5D2_BlogAPI.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_PostId",
-                table: "Comments",
+                name: "IX_Comment_PostId",
+                table: "Comment",
                 column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comment_UserId1",
+                table: "Comment",
+                column: "UserId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_BlogId",
@@ -292,7 +305,7 @@ namespace CS321_W5D2_BlogAPI.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Comments");
+                name: "Comment");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

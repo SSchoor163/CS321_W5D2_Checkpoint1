@@ -19,11 +19,12 @@ namespace CS321_W5D2_BlogAPI.Core.Services
 
         public Post Add(Post newPost)
         {
-            // TODO: Prevent users from adding to a blog that isn't theirs
-            //     Use the _userService to get the current users id.
-            //     You may have to retrieve the blog in order to check user id
-            // TODO: assign the current date to DatePublished
-            return _postRepository.Add(newPost);
+            if (_userService.CurrentUserId == _blogRepository.Get(newPost.BlogId).User.Id)
+            {
+                newPost.DatePublished = DateTime.Now;
+                return _postRepository.Add(newPost);
+            }
+            else throw new SystemException("You do not have authority to add a post to this blog");
         }
 
         public Post Get(int id)
@@ -44,14 +45,16 @@ namespace CS321_W5D2_BlogAPI.Core.Services
         public void Remove(int id)
         {
             var post = this.Get(id);
-            // TODO: prevent user from deleting from a blog that isn't theirs
-            _postRepository.Remove(id);
+            if (_userService.CurrentUserId == _blogRepository.Get(post.BlogId).User.Id)
+                _postRepository.Remove(id);
+            else throw new SystemException("You do not have authority to delete this post");
         }
 
         public Post Update(Post updatedPost)
         {
-            // TODO: prevent user from updating a blog that isn't theirs
-            return _postRepository.Update(updatedPost);
+            if (_userService.CurrentUserId == _blogRepository.Get(updatedPost.BlogId).User.Id)
+                return _postRepository.Update(updatedPost);
+            else throw new SystemException("You do not have authority to change this blog post.");
         }
 
     }

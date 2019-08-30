@@ -18,9 +18,9 @@ namespace CS321_W5D2_BlogAPI.Controllers
     {
         private readonly IBlogService _blogService;
 
-        // TODO: inject BlogService
-        public BlogsController()
+        public BlogsController(IBlogService blogService)
         {
+            _blogService = blogService;
         }
 
         // GET: api/blogs
@@ -30,17 +30,10 @@ namespace CS321_W5D2_BlogAPI.Controllers
         {
             try
             {
-                // TODO: replace the code below with the correct implementation
-                // to return all blogs
-                return Ok(new BlogModel[] {
-                    new BlogModel
-                    {
-                        Id = 1,
-                        Name = "Fix Me!",
-                        Description = "Implement GET /api/blogs",
-                        AuthorName = "unknown",
-                    }
-                });
+                var blogs  = _blogService.GetAll();
+                if (blogs == null) return NotFound();
+                return Ok(blogs.ToApiModels());
+                
             }
             catch (Exception ex)
             {
@@ -56,15 +49,9 @@ namespace CS321_W5D2_BlogAPI.Controllers
         {
             try
             {
-                // TODO: replace the code below with the correct implementation
-                // to return a blog by id
-                return Ok(new BlogModel
-                {
-                    Id = id,
-                    Name = "Fix Me!",
-                    Description = "Implement GET /api/blogs/{id}",
-                    AuthorName = "unknown",
-                });
+                var blog = _blogService.Get(id);
+                if (blog == null) return NotFound();
+                return Ok(blog.ToApiModel());
             }
             catch (Exception ex)
             {
@@ -94,6 +81,7 @@ namespace CS321_W5D2_BlogAPI.Controllers
         {
             try
             {
+                blog.Id = id;
                 return Ok(_blogService.Update(blog).ToApiModel());
             }
             catch (Exception ex)
