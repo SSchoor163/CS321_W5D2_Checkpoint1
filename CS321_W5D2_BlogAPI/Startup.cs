@@ -37,14 +37,14 @@ namespace CS321_W5D2_BlogAPI
 
             services.AddHttpContextAccessor();
 
-            // TODO: add your DbContext
+            
             services.AddDbContext<AppDbContext>();
 
-            // TODO: add identity services
+          
             services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>();
 
-            // TODO: add JWT support
+           
             // Add JWT support
             services.AddAuthentication(options =>
             {
@@ -65,10 +65,10 @@ namespace CS321_W5D2_BlogAPI
 
             services.AddScoped<IUserService, UserService>();
 
-            // TODO: add the DbInititializer service
+           
             services.AddScoped<DbInitializer>();
 
-            // TODO: add your repositories and services
+          
             services.AddScoped<IBlogRepository, BlogRepository>();
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IBlogService, BlogService>();
@@ -113,7 +113,7 @@ namespace CS321_W5D2_BlogAPI
                 }
             });
 
-            // TODO: add call to dbInitializer
+           
             dbInitializer.Initialize();
         }
     }
